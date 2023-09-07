@@ -15,17 +15,6 @@ public class Category {
     private String description;
 
 
-    @ManyToMany(mappedBy = "categories")
-    private List<Article> articles = new ArrayList<>();
-
-    public List<Article> getArticles() {
-        return articles;
-    }
-
-    public void setArticles(List<Article> articles) {
-        this.articles = articles;
-    }
-
     public Long getId() {
         return id;
     }
@@ -56,7 +45,6 @@ public class Category {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", articles=" + articles +
                 '}';
     }
 }
