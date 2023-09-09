@@ -70,6 +70,12 @@ public class ArticleController {
         articleDao.update(article);
         return article.toString();
     }
+    @PostMapping("delete")
+    public String delete(@RequestParam Long id) {
+        Article article = articleDao.findById(id);
+        articleDao.delete(article);
+        return article.toString();
+    }
 
 
 }
