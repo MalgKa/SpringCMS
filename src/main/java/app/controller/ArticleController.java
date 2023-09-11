@@ -83,6 +83,4 @@ public class ArticleController {
         List<Article> allArticles = articleDao.findAll();
         return allArticles.toString();
     }
-
-
 }
