@@ -5,6 +5,8 @@ import app.dao.AuthorDao;
 import app.entity.Author;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("authors")
 public class AuthorController {
@@ -42,6 +44,12 @@ public class AuthorController {
         Author author = authorDao.findById(id);
         authorDao.delete(author);
         return author.toString();
+    }
+
+    @GetMapping
+    public String findAll(){
+        List<Author> allAuthors = authorDao.findAll();
+        return allAuthors.toString();
     }
 
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("articles")
 public class ArticleController {
@@ -75,6 +76,12 @@ public class ArticleController {
         Article article = articleDao.findById(id);
         articleDao.delete(article);
         return article.toString();
+    }
+
+    @GetMapping()
+    public String findAll(){
+        List<Article> allArticles = articleDao.findAll();
+        return allArticles.toString();
     }
 
 

@@ -4,6 +4,8 @@ import app.dao.CategoryDao;
 import app.entity.Category;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("categories")
 public class CategoryController {
@@ -43,7 +45,11 @@ public class CategoryController {
         Category category = categoryDao.findById(id);
         categoryDao.delete(category);
         return category.toString();
+    }
 
-
+    @GetMapping
+    public String findAll(){
+        List<Category> allCategories=categoryDao.findAll();
+        return allCategories.toString();
     }
 }

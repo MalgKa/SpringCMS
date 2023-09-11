@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -27,6 +28,9 @@ public class ArticleDao {
 
     public Article findById(Long id) {
         return entityManager.find(Article.class, id);
+    }
 
+    public List<Article> findAll(){
+        return entityManager.createQuery("SELECT a FROM Article a", Article.class).getResultList();
     }
 }
