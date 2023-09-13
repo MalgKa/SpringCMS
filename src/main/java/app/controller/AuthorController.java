@@ -3,11 +3,13 @@ package app.controller;
 
 import app.dao.AuthorDao;
 import app.entity.Author;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("authors")
 public class AuthorController {
     private final AuthorDao authorDao;
@@ -16,41 +18,40 @@ public class AuthorController {
         this.authorDao = authorDao;
     }
 
-    @GetMapping("get")
-    public String get(@RequestParam Long id) {
-        Author author = authorDao.findById(id);
-        return author.toString();
+    @GetMapping("/list")
+    public String authorsListView(Model model) {
+        model.addAttribute("authors", authorDao.findAll());
+        return "authorsList";
     }
 
-    @PostMapping("create")
-    public String create(@RequestParam String firstName, @RequestParam String lastName) {
-        Author author = new Author();
-        author.setFirstName(firstName);
-        author.setLastName(lastName);
+    @GetMapping("/add")
+    public String addAuthorView(Model model) {
+        model.addAttribute("author", new Author());
+        return "add-author-view";
+    }
+
+    @PostMapping("/add")
+    public String addAuthor(Author author) {
         authorDao.save(author);
-        return author.toString();
+        return "redirect:/authors/list";
     }
 
-    @PostMapping("update")
-    public String update(@RequestParam Long id, @RequestParam String firstName, @RequestParam String lastName) {
-            Author author = authorDao.findById(id);
-            author.setFirstName(firstName);
-            author.setLastName(lastName);
-            authorDao.update(author);
-            return author.toString();
-    }
-    @PostMapping("delete")
-    public String delete(@RequestParam Long id) {
+    @PostMapping("/delete")
+    public String deleteAuthor(@RequestParam Long id) {
         Author author = authorDao.findById(id);
         authorDao.delete(author);
-        return author.toString();
+        return "redirect:/authors/list";
     }
 
-    @GetMapping
-    public String findAll(){
-        List<Author> allAuthors = authorDao.findAll();
-        return allAuthors.toString();
+    @GetMapping("/update")
+    public String updateAuthorView(Model model, @RequestParam Long id){
+        model.addAttribute("author", authorDao.findById(id));
+        return "update-author-view";
+
     }
-
-
+    @PostMapping("/update")
+    public String updateAuthor(Author author) {
+        authorDao.update(author);
+        return "redirect:/authors/list";
+    }
 }

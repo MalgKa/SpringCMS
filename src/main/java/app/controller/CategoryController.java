@@ -28,7 +28,7 @@ public class CategoryController {
     @GetMapping("/add")
     public String addCategoryView(Model model) {
         model.addAttribute("category", new Category());
-        return "add-view";
+        return "add-category-view";
     }
 
     @PostMapping("/add")
@@ -39,7 +39,7 @@ public class CategoryController {
     @GetMapping("/delete")
     public String deleteCategoryView(Model model, @RequestParam Long id){
         model.addAttribute("category", categoryDao.findById(id));
-        return "delete-view";
+        return "delete-category-view";
     }
 
     @PostMapping("/delete")
@@ -52,7 +52,7 @@ public class CategoryController {
     @GetMapping("/update")
     public String updateCategoryView(Model model, @RequestParam Long id) {
         model.addAttribute("category", categoryDao.findById(id));
-        return "update-view";
+        return "update-category-view";
     }
 
     @PostMapping("/update")
