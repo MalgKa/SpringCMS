@@ -5,14 +5,13 @@ import app.dao.ArticleDao;
 import app.dao.AuthorDao;
 import app.dao.CategoryDao;
 import app.entity.Article;
-import app.entity.Author;
-import app.entity.Category;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
-@RestController
+@Controller
 @RequestMapping("articles")
 public class ArticleController {
     private final ArticleDao articleDao;
@@ -26,61 +25,46 @@ public class ArticleController {
         this.categoryDao = categoryDao;
     }
 
-    @GetMapping("get")
-    public String get(@RequestParam Long id) {
-        Article article = articleDao.findById(id);
-        return article.toString();
+    @GetMapping("/list")
+    public String articleListView(Model model) {
+        model.addAttribute("articles", articleDao.findAll());
+        return "articlesList";
     }
 
-    @PostMapping("create")
-    public String create(@RequestParam String title, @RequestParam String content,
-                         @RequestParam Long authorId, @RequestParam List<Long> categoriesIds) {
-        Article article = new Article();
+    @GetMapping("/add")
+    public String addArticleView(Model model){
+        model.addAttribute("article", new Article());
+        model.addAttribute("authorsList", authorDao.findAll());
+        model.addAttribute("categoryList", categoryDao.findAll());
+        return "add-article-view";
+    }
 
-        Author author = authorDao.findById(authorId);
-        article.setAuthor(author);
-
-        for (Long categoryId : categoriesIds) {
-            Category category = categoryDao.findById(categoryId);
-            article.getCategories().add(category);
-        }
-
-        article.setTitle(title);
-        article.setContent(content);
-
+    @PostMapping("/add")
+    public String addArticle(Article article) {
         articleDao.save(article);
-        return article.toString();
-
+        return "redirect:/articles/list";
     }
 
-    @PostMapping("update")
-    public String update(@RequestParam Long articleId, @RequestParam String title,
-                         @RequestParam String content, @RequestParam Long authorId,
-                         @RequestParam List<Long> categoriesIds) {
-        Article article = articleDao.findById(articleId);
-        article.setTitle(title);
-        article.setContent(content);
-
-        Author author = authorDao.findById(authorId);
-        article.setAuthor(author);
-
-        for (Long categoryId : categoriesIds) {
-            Category category = categoryDao.findById(categoryId);
-            article.getCategories().add(category);
-        }
-        articleDao.update(article);
-        return article.toString();
-    }
     @PostMapping("delete")
     public String delete(@RequestParam Long id) {
         Article article = articleDao.findById(id);
         articleDao.delete(article);
-        return article.toString();
+        return "redirect:/articles/list";
     }
 
-    @GetMapping()
-    public String findAll(){
-        List<Article> allArticles = articleDao.findAll();
-        return allArticles.toString();
+
+    @GetMapping("update")
+    public String updateArticleView(Model model, @RequestParam Long id){
+        model.addAttribute("article", articleDao.findById(id));
+        model.addAttribute("authorsList", authorDao.findAll());
+        model.addAttribute("categoryList", categoryDao.findAll());
+        return "update-article-view";
+    }
+
+
+    @PostMapping("update")
+    public String update(Article article) {
+        articleDao.update(article);
+        return "redirect:/articles/list";
     }
 }
