@@ -2,12 +2,14 @@ package app.controller;
 
 import app.dao.CategoryDao;
 import app.entity.Category;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("categories")
+@Controller
+@RequestMapping("/categories")
 public class CategoryController {
 
     private final CategoryDao categoryDao;
@@ -16,40 +18,47 @@ public class CategoryController {
         this.categoryDao = categoryDao;
     }
 
-    @GetMapping("get")
-    public String get(@RequestParam Long id) {
-        Category category = categoryDao.findById(id);
-        return category.toString();
+    @GetMapping("/list")
+    public String findAll(Model model) {
+        List<Category> categoryList = categoryDao.findAll();
+        model.addAttribute("categoryList", categoryList);
+        return "categoryList";
     }
 
-    @PostMapping("create")
-    public String create(@RequestParam String description, @RequestParam String name) {
-        Category category = new Category();
-        category.setDescription(description);
-        category.setName(name);
+    @GetMapping("/add")
+    public String addCategoryView(Model model) {
+        model.addAttribute("category", new Category());
+        return "add-view";
+    }
+
+    @PostMapping("/add")
+    public String addCategory(Category category){
         categoryDao.save(category);
-        return category.toString();
+        return "redirect:/categories/list";
+    }
+    @GetMapping("/delete")
+    public String deleteCategoryView(Model model, @RequestParam Long id){
+        model.addAttribute("category", categoryDao.findById(id));
+        return "delete-view";
     }
 
-    @PostMapping("update")
-    public String update(@RequestParam Long id, @RequestParam String description, @RequestParam String name) {
-        Category category = categoryDao.findById(id);
-        category.setDescription(description);
-        category.setName(name);
-        categoryDao.update(category);
-        return category.toString();
-    }
-
-    @PostMapping("delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam Long id) {
         Category category = categoryDao.findById(id);
         categoryDao.delete(category);
-        return category.toString();
+        return "redirect:/categories/list";
     }
 
-    @GetMapping
-    public String findAll(){
-        List<Category> allCategories=categoryDao.findAll();
-        return allCategories.toString();
+    @GetMapping("/update")
+    public String updateCategoryView(Model model, @RequestParam Long id) {
+        model.addAttribute("category", categoryDao.findById(id));
+        return "update-view";
     }
+
+    @PostMapping("/update")
+    public String updateCategory(Category category) {
+        categoryDao.update(category);
+        return "redirect:/categories/list";
+    }
+
 }
